@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Stored Tabs</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      .close-btn {
+        cursor: pointer;
+        color: red;
+        border: none;
+        background: none;
+        font-size: 16px;
+      }
+      .checkbox-container {
+        display: flex;
+        align-items: center;
+      }
+      #filterInput {
+        margin-bottom: 10px;
+        width: 100%;
+        padding: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Stored Tabs</h1>
+    <input type="text" id="filterInput" placeholder="Filter tabs..." />
+    <div class="action-buttons">
+      <button id="closeAllOtherTabs">Close All Other Tabs</button>
+      <button id="clearStorage">Clear All Stored Tabs</button>
+      <button id="openAllTabs">Open All Tabs</button>
+      <button id="openSelectedTabs">Open Selected Tabs</button>
+    </div>
+    <table id="tabList">
+      <thead>
+        <tr>
+          <th>Close</th>
+          <th>Select</th>
+          <th>Title</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <script src="tabList.js"></script>
+  </body>
+</html>

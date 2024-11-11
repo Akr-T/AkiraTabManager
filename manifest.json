@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Akira Tab Manager",
+  "version": "1.0",
+  "description": "Manage and store open tabs",
+  "permissions": ["tabs", "storage", "windows"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}
