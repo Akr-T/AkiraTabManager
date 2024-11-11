@@ -1,27 +1,23 @@
 document.addEventListener("DOMContentLoaded", function () {
   let allTabs = [];
 
-  // 現在のウィンドウのアクティブなタブと、保存されているタブの両方を取得
-  chrome.tabs.query(
-    { active: true, currentWindow: true },
-    function (activeTabs) {
-      chrome.storage.local.get(["stock"], function (result) {
-        let storedTabs = result.stock || [];
+  // すべてのタブを取得
+  chrome.tabs.query({}, function (tabs) {
+    chrome.storage.local.get(["stock"], function (result) {
+      let storedTabs = result.stock || [];
 
-        // アクティブなタブが保存されていない場合は追加
-        if (activeTabs.length > 0) {
-          let activeTab = activeTabs[0];
-          if (!storedTabs.some((tab) => tab.id === activeTab.id)) {
-            storedTabs.push(activeTab);
-          }
+      // 取得したすべてのタブを保存
+      tabs.forEach((tab) => {
+        if (!storedTabs.some((storedTab) => storedTab.id === tab.id)) {
+          storedTabs.push(tab);
         }
-
-        // ホストURLでグループ化し、名前順にソート
-        allTabs = groupByHost(storedTabs);
-        renderTabs(allTabs);
       });
-    }
-  );
+
+      // ホストURLでグループ化し、名前順にソート
+      allTabs = groupByHost(storedTabs);
+      renderTabs(allTabs);
+    });
+  });
 
   function groupByHost(tabs) {
     const grouped = {};
@@ -62,9 +58,10 @@ document.addEventListener("DOMContentLoaded", function () {
       closeBtn.textContent = "X";
       closeBtn.className = "close-btn";
       closeBtn.addEventListener("click", function () {
-        chrome.tabs.remove(tab.id);
-        allTabs = allTabs.filter((t) => t.id !== tab.id);
+        chrome.tabs.remove(tab.id); // ブラウザ標準のタブ閉じる機能
+        allTabs = allTabs.filter((t) => t.id !== tab.id); // 表示リストから削除
         renderTabs(allTabs);
+        saveTabs(); // 更新されたタブリストを保存
       });
       closeTd.appendChild(closeBtn);
       tr.appendChild(closeTd);
@@ -104,6 +101,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  function saveTabs() {
+    chrome.storage.local.set({ stock: allTabs }, function () {
+      console.log("Tabs saved successfully.");
+    });
+  }
+
   // フィルター機能
   document
     .getElementById("filterInput")
@@ -125,9 +128,11 @@ document.addEventListener("DOMContentLoaded", function () {
         { active: false, currentWindow: true },
         function (tabs) {
           const tabIds = tabs.map((tab) => tab.id);
+
           chrome.tabs.remove(tabIds, function () {
             allTabs = allTabs.filter((tab) => !tabIds.includes(tab.id));
             renderTabs(allTabs);
+            saveTabs(); // 更新されたタブリストを保存
           });
         }
       );
